@@ -1,16 +1,13 @@
 import sys
-import time
 
-import gevent
 from gevent.lock import BoundedSemaphore
-from cymod import *
-import redis
+from cywrap import *
 import six
 
 
 class ConnectionPool(object):
 
-    def __init__(self, max_connections=1, connection_class=Connection):
+    def __init__(self, max_connections=10, connection_class=Connection):
         self._max_connections = max_connections
         self._connection_class = connection_class
         self._reset()
@@ -62,6 +59,12 @@ class ConnectionPool(object):
         except CommandError as e:
             self._release(connection)
             six.reraise(CommandError, CommandError(e.args[0]), sys.exc_info()[2])
+
+# ############# example code for performance comparison #############
+# import time
+#
+# import gevent
+# import redis
 
 
 # def mycalldef(command):

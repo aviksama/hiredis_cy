@@ -13,4 +13,6 @@ setup(
     ext_modules=cythonize([
         main, sub
     ]),
+    author='Avik S',
+    url='https://github.com/aviksama'
 )
