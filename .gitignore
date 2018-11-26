@@ -5,4 +5,6 @@ build/
 dist/
 cywrap.c
 cywrap.cpython-36m-darwin.so
+cyredis.c
+cyredis.cpython-36m-darwin.so
 hiredis_cy.egg-info/

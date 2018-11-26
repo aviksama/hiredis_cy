@@ -4,15 +4,26 @@ from gevent.lock import BoundedSemaphore
 import six
 from cywrap import CommandError, ConnectionError, Connection, ConnectionLimitExceeded
 
+import sys
+import gevent
+from gevent.lock import BoundedSemaphore
+import six
+from cywrap import CommandError, ConnectionError, Connection, ConnectionLimitExceeded
 
-class ConnectionPool(object):
+
+cdef class ConnectionPool(object):
+    cdef _max_connections
+    cdef _connection_class
+    cdef available_connections
+    cdef lock
+    cdef created_connections
 
     def __init__(self, max_connections=10, connection_class=Connection):
         self._max_connections = max_connections
         self._connection_class = connection_class
         self._reset()
 
-    def _reset(self):
+    cdef _reset(self):
         self.available_connections = []
         self.lock = BoundedSemaphore()
         self.created_connections = 0
@@ -33,7 +44,7 @@ class ConnectionPool(object):
     #                 raise ConnectionError("max connection limit exhausted, cannot create connection")
     #     return connection
 
-    def _get_connection(self):
+    cdef _get_connection(self):
         with self.lock:
             if self.available_connections:
                 connection = self.available_connections.pop()
@@ -44,7 +55,7 @@ class ConnectionPool(object):
                 raise ConnectionLimitExceeded("max connection limit exhausted, cannot create connection")
         return connection
 
-    def _release(self, connection):
+    cdef _release(self, connection):
         with self.lock:
             self.available_connections.append(connection)
 
