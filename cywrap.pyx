@@ -12,6 +12,8 @@ class ConnectionError(Exception):
     pass
 class CommandError(Exception):
     pass
+class ConnectionLimitExceeded(Exception):
+    pass
 
 
 cdef parse_reply(cimp.redisReply *reply, const int is_parent):
